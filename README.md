@@ -12,6 +12,5 @@ Do **not copy or rehost** the code, assets, or designs without permission.
 ## 🌐 Connect with Me
 
 - 🎥 [YouTube – surbhipsychtutor](https://www.youtube.com/@surbhipsychtutor)  
-- 🔗 [Linktree](https://linktr.ee/surbhi_psychologytutor)
 
 > 🚧 This is a growing space — stay tuned for more creations!
