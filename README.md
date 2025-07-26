@@ -1,6 +1,17 @@
-# Creative-Tools-Mini-Projects
-Welcome to my collection of general-purpose digital tools and mini web projects.  
-This repo features fun, interactive, and useful utility based creations 
+# Snake Reinforcement Game
+
+Created and maintained by [@surbhipsychtutor](https://www.youtube.com/@surbhipsychtutor) 💻📘
+
+Welcome to the **Snake Reinforcement Game**, a classic twist on the original Snake game — designed to demonstrate the **psychological principles of rewards and consequences** using interactive gameplay. It's not just about getting a high score — it's about understanding **reinforcement in action**.
+
+This game is a **practical demonstration of Operant Conditioning** by B.F. Skinner. Here's how it connects:
+
+- **Positive Reinforcement**: Eating food increases score (reward for desired behavior).
+- **Negative Consequence**: Hitting the wall or your tail ends the game (punishment for undesired action).
+- Encourages players to repeat behavior patterns that lead to **rewards**, and avoid those that lead to **consequences**.
+
+Great for:
+- Psychology students  
 
 All projects in this repository are:
 - 🔒 **Copyrighted**
