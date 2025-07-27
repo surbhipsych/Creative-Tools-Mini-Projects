@@ -18,6 +18,11 @@
     canvas {
       border: 2px solid white;
       background-color: white;
+      max-width: 95vw;
+      max-height: 95vw;
+      width: 400px;
+      height: 400px;
+      touch-action: none;
     }
 
     #startBtn {
@@ -34,6 +39,7 @@
     #scoreBoard {
       margin: 10px;
       font-size: 20px;
+      text-align: center;
     }
 
     #gameOver {
@@ -41,6 +47,37 @@
       font-size: 24px;
       display: none;
       margin-top: 10px;
+    }
+
+    #mobileControls {
+      margin-top: 15px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+    }
+
+    #mobileControls button.arrow {
+      padding: 10px 18px;
+      font-size: 24px;
+      margin: 2px;
+      background: #ff4081;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    #mobileControls div {
+      display: flex;
+      justify-content: center;
+      gap: 5px;
+    }
+
+    @media (min-width: 768px) {
+      #mobileControls {
+        display: none;
+      }
     }
   </style>
 </head>
@@ -50,6 +87,15 @@
 <div id="scoreBoard">Score: 0 | Level: 1</div>
 <div id="gameOver">Game Over</div>
 <button id="startBtn">Start Game</button>
+
+<div id="mobileControls">
+  <button class="arrow" data-dir="up">↑</button>
+  <div>
+    <button class="arrow" data-dir="left">←</button>
+    <button class="arrow" data-dir="down">↓</button>
+    <button class="arrow" data-dir="right">→</button>
+  </div>
+</div>
 
 <script>
 const canvas = document.getElementById('game');
@@ -102,13 +148,11 @@ function updateScore() {
 }
 
 function drawSnakeHead(x, y) {
-  // Draw main red circle
   ctx.fillStyle = snake.color;
   ctx.beginPath();
   ctx.arc(x + grid / 2, y + grid / 2, grid / 2 - 1, 0, Math.PI * 2);
   ctx.fill();
 
-  // Eyes
   ctx.fillStyle = 'white';
   ctx.beginPath();
   ctx.arc(x + 5, y + 6, 2, 0, Math.PI * 2);
@@ -121,7 +165,6 @@ function drawSnakeHead(x, y) {
   ctx.arc(x + 13, y + 6, 1, 0, Math.PI * 2);
   ctx.fill();
 
-  // Tongue
   ctx.strokeStyle = 'pink';
   ctx.beginPath();
   ctx.moveTo(x + 10, y + 15);
@@ -143,7 +186,6 @@ function drawDonut(x, y) {
 
 function loop() {
   animationFrame = requestAnimationFrame(loop);
-
   if (++count < (15 - speed)) return;
   count = 0;
 
@@ -152,7 +194,6 @@ function loop() {
   snake.x += snake.dx;
   snake.y += snake.dy;
 
-  // wrap snake position
   if (snake.x < 0) snake.x = canvas.width - grid;
   else if (snake.x >= canvas.width) snake.x = 0;
   if (snake.y < 0) snake.y = canvas.height - grid;
@@ -171,14 +212,12 @@ function loop() {
       ctx.fillRect(cell.x, cell.y, grid - 1, grid - 1);
     }
 
-    // collision with food
     if (cell.x === donut.x && cell.y === donut.y) {
       snake.maxCells++;
       score++;
       donut.x = getRandomInt(0, 20) * grid;
       donut.y = getRandomInt(0, 20) * grid;
 
-      // level up every 5 points
       if (score % 5 === 0) {
         level++;
         speed = Math.min(speed + 1, 14);
@@ -188,7 +227,6 @@ function loop() {
       updateScore();
     }
 
-    // collision with self
     for (let i = index + 1; i < snake.cells.length; i++) {
       if (cell.x === snake.cells[i].x && cell.y === snake.cells[i].y) {
         cancelAnimationFrame(animationFrame);
@@ -199,7 +237,6 @@ function loop() {
   });
 }
 
-// Animate snake intro
 function animateIntro(callback) {
   let introX = 0;
   const interval = setInterval(() => {
@@ -213,7 +250,6 @@ function animateIntro(callback) {
   }, 30);
 }
 
-// Start button event
 startBtn.addEventListener('click', () => {
   startBtn.style.display = 'none';
   resetGame();
@@ -222,7 +258,6 @@ startBtn.addEventListener('click', () => {
   });
 });
 
-// Keyboard control
 document.addEventListener('keydown', e => {
   if (e.which === 37 && snake.dx === 0) {
     snake.dx = -grid;
@@ -238,7 +273,73 @@ document.addEventListener('keydown', e => {
     snake.dx = 0;
   }
 });
+
+// Touch Controls for Mobile
+let startX, startY;
+
+canvas.addEventListener('touchstart', e => {
+  const touch = e.touches[0];
+  startX = touch.clientX;
+  startY = touch.clientY;
+}, { passive: true });
+
+canvas.addEventListener('touchmove', e => {
+  if (!startX || !startY) return;
+  const touch = e.touches[0];
+  const diffX = touch.clientX - startX;
+  const diffY = touch.clientY - startY;
+
+  if (Math.abs(diffX) > Math.abs(diffY)) {
+    if (diffX > 0 && snake.dx === 0) {
+      snake.dx = grid;
+      snake.dy = 0;
+    } else if (diffX < 0 && snake.dx === 0) {
+      snake.dx = -grid;
+      snake.dy = 0;
+    }
+  } else {
+    if (diffY > 0 && snake.dy === 0) {
+      snake.dy = grid;
+      snake.dx = 0;
+    } else if (diffY < 0 && snake.dy === 0) {
+      snake.dy = -grid;
+      snake.dx = 0;
+    }
+  }
+
+  startX = null;
+  startY = null;
+}, { passive: true });
+
+// Mobile Button Controls
+document.querySelectorAll('#mobileControls .arrow').forEach(button => {
+  button.addEventListener('click', () => {
+    const dir = button.getAttribute('data-dir');
+    if (dir === 'left' && snake.dx === 0) {
+      snake.dx = -grid;
+      snake.dy = 0;
+    } else if (dir === 'right' && snake.dx === 0) {
+      snake.dx = grid;
+      snake.dy = 0;
+    } else if (dir === 'up' && snake.dy === 0) {
+      snake.dy = -grid;
+      snake.dx = 0;
+    } else if (dir === 'down' && snake.dy === 0) {
+      snake.dy = grid;
+      snake.dx = 0;
+    }
+  });
+});
+
+// Responsive canvas size
+function resizeCanvas() {
+  const size = Math.min(window.innerWidth, window.innerHeight) * 0.95;
+  canvas.style.width = `${size}px`;
+  canvas.style.height = `${size}px`;
+}
+
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas(); // initial call
 </script>
 </body>
 </html>
-
