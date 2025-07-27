@@ -4,29 +4,46 @@
   <title>Donut Snake Game</title>
   <style>
     html, body {
-      height: 100%;
       margin: 0;
+      padding: 0;
+      height: 100vh;
       background: #000;
       color: white;
       font-family: sans-serif;
+      overflow: hidden;
+    }
+
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .game-wrapper {
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
+      max-height: 100%;
     }
 
     canvas {
-      border: 2px solid white;
       background-color: white;
-      max-width: 95vw;
-      max-height: 95vw;
-      width: 400px;
-      height: 400px;
+      border: 2px solid white;
+      width: 85vmin;
+      height: 85vmin;
+      max-width: 400px;
+      max-height: 400px;
       touch-action: none;
     }
 
+    #scoreBoard {
+      font-size: 20px;
+      margin: 10px 0 5px;
+      text-align: center;
+    }
+
     #startBtn {
-      margin-top: 15px;
+      margin-top: 10px;
       padding: 10px 20px;
       font-size: 18px;
       background: #ff4081;
@@ -34,12 +51,6 @@
       border: none;
       border-radius: 8px;
       cursor: pointer;
-    }
-
-    #scoreBoard {
-      margin: 10px;
-      font-size: 20px;
-      text-align: center;
     }
 
     #gameOver {
@@ -50,7 +61,7 @@
     }
 
     #mobileControls {
-      margin-top: 15px;
+      margin-top: 10px;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -60,7 +71,6 @@
     #mobileControls button.arrow {
       padding: 10px 18px;
       font-size: 24px;
-      margin: 2px;
       background: #ff4081;
       color: white;
       border: none;
@@ -83,17 +93,19 @@
 </head>
 <body>
 
-<canvas id="game" width="400" height="400"></canvas>
-<div id="scoreBoard">Score: 0 | Level: 1</div>
-<div id="gameOver">Game Over</div>
-<button id="startBtn">Start Game</button>
+<div class="game-wrapper">
+  <canvas id="game" width="400" height="400"></canvas>
+  <div id="scoreBoard">Score: 0 | Level: 1</div>
+  <div id="gameOver">Game Over</div>
+  <button id="startBtn">Start Game</button>
 
-<div id="mobileControls">
-  <button class="arrow" data-dir="up">↑</button>
-  <div>
-    <button class="arrow" data-dir="left">←</button>
-    <button class="arrow" data-dir="down">↓</button>
-    <button class="arrow" data-dir="right">→</button>
+  <div id="mobileControls">
+    <button class="arrow" data-dir="up">↑</button>
+    <div>
+      <button class="arrow" data-dir="left">←</button>
+      <button class="arrow" data-dir="down">↓</button>
+      <button class="arrow" data-dir="right">→</button>
+    </div>
   </div>
 </div>
 
@@ -274,9 +286,7 @@ document.addEventListener('keydown', e => {
   }
 });
 
-// Touch Controls for Mobile
 let startX, startY;
-
 canvas.addEventListener('touchstart', e => {
   const touch = e.touches[0];
   startX = touch.clientX;
@@ -311,7 +321,6 @@ canvas.addEventListener('touchmove', e => {
   startY = null;
 }, { passive: true });
 
-// Mobile Button Controls
 document.querySelectorAll('#mobileControls .arrow').forEach(button => {
   button.addEventListener('click', () => {
     const dir = button.getAttribute('data-dir');
@@ -330,16 +339,6 @@ document.querySelectorAll('#mobileControls .arrow').forEach(button => {
     }
   });
 });
-
-// Responsive canvas size
-function resizeCanvas() {
-  const size = Math.min(window.innerWidth, window.innerHeight) * 0.95;
-  canvas.style.width = `${size}px`;
-  canvas.style.height = `${size}px`;
-}
-
-window.addEventListener('resize', resizeCanvas);
-resizeCanvas(); // initial call
 </script>
 </body>
 </html>
